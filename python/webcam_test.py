@@ -29,8 +29,9 @@ run(setup, loop)
 '''
 # ON MAC, the following command needs to be ran
 # sudo sysctl -w net.inet.udp.maxdgram=6553500
-# data sent is currently too big, my next goal is to find out how
-# to reduce this to keep it under the MAX SIZE LIMIT
+# This is because data sent is currently too big, my next goal is to find out how
+# to reduce this to keep it under the MAX SIZE LIMIT and NOT have to run the above
+# command
 # it also currently runs endlessly
 
 #!/usr/bin/env python3
