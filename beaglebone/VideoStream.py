@@ -47,7 +47,7 @@ class VideoStream:
                 encoded_frame, buffered_image = cv.imencode('.jpg', image_frame, [cv.IMWRITE_JPEG_QUALITY, 35])
                 
                 #Sends packet to specified IP address 
-                self.server_socket.sendto(buffered_image.tobytes(), (socket.gethostname(), self.port))
+                self.server_socket.sendto(buffered_image.tobytes(), (self.host, self.port))
             
     
     def stop_stream(self):
