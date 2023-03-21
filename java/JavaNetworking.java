@@ -20,6 +20,7 @@ public class JavaNetworking {
      * sends messages to beagleBone
      */
     private PrintWriter sendMessage;
+    
     /** This method listens in a specified port
      * if a connection can be made, it returns the socket through which
      * communication can be made.
@@ -58,7 +59,6 @@ public class JavaNetworking {
             //if a connection cannot be made.
             socket = null;
         }
-
         return socket;
     }
 
@@ -103,8 +103,8 @@ public class JavaNetworking {
                     cleanUp(socket);
                     break;
             }
-
             confirmed = readMessage.readLine();
+            
             if (confirmed == null){
                 output = -1;
             }
@@ -194,7 +194,6 @@ public class JavaNetworking {
                 return -1;
             }
         }
-        
         return 0;
     }
     /** Main method for debugging
