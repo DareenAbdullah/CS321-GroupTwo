@@ -217,7 +217,7 @@ public class JavaNetworking {
         int i = 0;
         Socket s = j.createConnection(12345, LOCAL_HOST, "none", "none");
         if (s != null && s.isConnected()){
-            while(i <100){
+            while(i <10000){
 
                 System.out.println("success connecting!");
                 System.out.println(j.move(s, 'l'));               
@@ -226,10 +226,11 @@ public class JavaNetworking {
                 System.out.println(j.move(s, 'b'));
                 System.out.println(j.startStreaming(s));
                 System.out.println(j.stopStreaming(s));
-                System.out.println(j.move(s, 'q'));
+                System.out.println(j.move(s, 'e'));
                 if (s.isClosed()){
                     break;
                 }
+                System.out.println(i);
                 i++;
             }
         }
