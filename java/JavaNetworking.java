@@ -1,3 +1,4 @@
+
 /** This class is responsible for connecting and communicating with
  * the main python class in the beaglebone.
  * @author Romel Munoz Valencia
@@ -10,7 +11,7 @@ public class JavaNetworking {
      * Local host IP address used for testing
      */
     public static final String LOCAL_HOST = "127.0.0.1";
-    
+
     /**
      * readsMessages from beagleBone
      */
@@ -20,63 +21,74 @@ public class JavaNetworking {
      * sends messages to beagleBone
      */
     private PrintWriter sendMessage;
-    
-    /** This method listens in a specified port
+    private Socket socket = null;
+
+    /**
+     * Constructor to take in key event:
+     * Create the socket object
+     * @param event
+     */
+ 
+    JavaNetworking() {
+        socket = createConnection(portNumber, hostName,clientPass, serverPass);
+    }
+
+    /**
+     * This method listens in a specified port
      * if a connection can be made, it returns the socket through which
      * communication can be made.
      * 
      * @param portNumber user specified port number
-     * @param password message recognized by our beaglebone server program
+     * @param password   message recognized by our beaglebone server program
      * 
      * @return socket through which communication is possible.
      */
-    public Socket createConnection(int portNumber, String hostName, String clientPass, String serverPass){
-        Socket socket = null;
-        try{
+    public Socket createConnection(int portNumber, String hostName, String clientPass, String serverPass) {
+        // Socket socket = null;
+        try {
             socket = new Socket(hostName, portNumber);
             this.readMessage = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.sendMessage = new PrintWriter(socket.getOutputStream(), true);
-            
-            //Sends string to beaglebone
+
+            // Sends string to beaglebone
             sendMessage.print(serverPass);
             sendMessage.flush();
 
             String check = null;
             check = readMessage.readLine();
 
-            //Checks if beaglebone sends correct password
-            if (check == null || !check.equals((clientPass))){
+            // Checks if beaglebone sends correct password
+            if (check == null || !check.equals((clientPass))) {
                 sendMessage.close();
                 readMessage.close();
                 socket.close();
                 return null;
-            }
-            else{
+            } else {
                 return socket;
             }
-        }
-        catch(IOException e){
-            //if a connection cannot be made.
+        } catch (IOException e) {
+            // if a connection cannot be made.
             socket = null;
         }
         return socket;
     }
 
-    /** This method sends commands to the beaglebone
+    /**
+     * This method sends commands to the beaglebone
      * 
      * @param socket
      * @param command either 'l', 'r', 'f', 'b', '0' , '1'
      * 
      * @return 0 if success
      */
-    public int move(Socket socket, char command){
+    public int move(char command) {
         int output = 0;
-        if (socket == null){
+        if (socket == null) {
             return -1;
-        }
-        try{
+        } // Might wanna check the socket seperately-
+        try {
             String confirmed = null;
-            
+
             switch (command) {
                 case 'l':
                     System.out.println("Moving left");
@@ -104,72 +116,68 @@ public class JavaNetworking {
                     break;
             }
             confirmed = readMessage.readLine();
-            
-            if (confirmed == null){
+
+            if (confirmed == null) {
                 output = -1;
             }
-        }
-        catch(IOException e){
+        } catch (IOException e) {
             output = -1;
         }
         return output;
     }
-    
-    /** This method sends the command to start video streaming
+
+    /**
+     * This method sends the command to start video streaming
      * 
      * @param socket
      * 
      * @return true if stream starts successfully
      */
-    public boolean startStreaming(Socket socket){
-        if (socket == null){
+    public boolean startStreaming(Socket socket) {
+        if (socket == null) {
             return false;
         }
-        try{
+        try {
             this.sendMessage.print("4");
             this.sendMessage.flush();
 
             String confirmed = null;
             confirmed = this.readMessage.readLine();
-            if (confirmed == null || !confirmed.equals("Streaming")){
+            if (confirmed == null || !confirmed.equals("Streaming")) {
                 return false;
-            }
-            else{
+            } else {
                 return true;
             }
-        }
-        catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    /** Stops video streaming
-     *  
+    /**
+     * Stops video streaming
+     * 
      * @param socket
      * @return true if successful
      */
-    public boolean stopStreaming(Socket socket){
-        //If it's not streaming, simply return true
+    public boolean stopStreaming(Socket socket) {
+        // If it's not streaming, simply return true
         boolean flag = false;
-        if (!startStreaming(socket)){
+        if (!startStreaming(socket)) {
             return true;
-        }
-        else{
-            try{
+        } else {
+            try {
                 this.sendMessage.print("5");
                 this.sendMessage.flush();
 
                 String confirmed = null;
                 confirmed = this.readMessage.readLine();
-                if (confirmed == null || !confirmed.equals("Not streaming")){
+                if (confirmed == null || !confirmed.equals("Not streaming")) {
                     flag = false;
-                }
-                else{
+                } else {
                     flag = true;
                 }
-            }
-            catch(IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
                 flag = false;
             }
@@ -177,35 +185,38 @@ public class JavaNetworking {
         return flag;
     }
 
-    /** This method closes the open socket and any other resource
+    /**
+     * This method closes the open socket and any other resource
+     * 
      * @param socket
      * @return 0 if success, -1 if any error
      */
-    public int cleanUp(Socket socket){
-        if (socket != null){
-            try{
+    public int cleanUp(Socket socket) {
+        if (socket != null) {
+            try {
                 stopStreaming(socket);
                 this.sendMessage.close();
                 this.readMessage.close();
                 socket.close();
-            }
-            catch(IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
                 return -1;
             }
         }
         return 0;
     }
-    /** Main method for debugging
+
+    /**
+     * Main method for debugging
      * 
      * @param args
      */
-    public static void main(String[] args){
+    public static void main(String[] args) {
         JavaNetworking j = new JavaNetworking();
         Socket s = j.createConnection(12345, LOCAL_HOST, "none", "none");
-        if (s != null && s.isConnected()){
+        if (s != null && s.isConnected()) {
             System.out.println("success connecting!");
-            System.out.println(j.move(s, 'l'));               
+            System.out.println(j.move(s, 'l'));
             System.out.println(j.move(s, 'r'));
             System.out.println(j.move(s, 'f'));
             System.out.println(j.move(s, 'b'));
@@ -213,8 +224,7 @@ public class JavaNetworking {
             System.out.println(j.stopStreaming(s));
             System.out.println(j.move(s, 'q'));
             System.out.println(s.isClosed());
-        }
-        else{
+        } else {
             System.out.println("Unsuccessful, socket is closed");
         }
     }
