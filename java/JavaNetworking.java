@@ -100,6 +100,8 @@ public class JavaNetworking {
                     break;
                 case 'q':
                     System.out.println("Exiting all processes");
+                    sendMessage.print("q");
+                    sendMessage.flush();
                     cleanUp(socket);
                     break;
             }
