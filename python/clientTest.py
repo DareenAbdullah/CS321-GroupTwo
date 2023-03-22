@@ -14,10 +14,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 		print(f"Connected by {address}")
 		while True:
 			data = connection.recv(1024)
-			#if not data:
-			#	break
-			data = str(data, 'utf-8')
 			if not data:
+				continue
+			data = str(data, 'utf-8')
+			if "q" in data:
 				break
 			elif "none" in data:
 				print(data)
@@ -49,6 +49,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 				print("Not streaming")
 				continue
 			else:
-				break
+				continue
 
 print("Connection successful from beaglebone")
