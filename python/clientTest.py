@@ -45,11 +45,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 				print("currently unable to stream")
 				continue
 			elif "5" in data:
-				connection.sendall(bytes('Not streaming\n'), 'utf-8')
+				connection.sendall(bytes('Not streaming\n', 'utf-8'))
 				print("Not streaming")
 				continue
 			else:
-				connection.sendall(bytes("data\n"), 'utf-8')
+				connection.sendall(bytes("\n", 'utf-8'))
 				continue
 
 print("Connection successful from beaglebone")
