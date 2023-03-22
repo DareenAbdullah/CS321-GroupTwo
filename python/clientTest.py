@@ -30,18 +30,18 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 				continue
 			elif "1" in data:
 				connection.sendall(bytes('1\n', 'utf-8'))
-				print("Running moveRight")
+				print("Running moveRight()")
 				continue
 			elif "2" in data:
 				connection.sendall(bytes('2\n', 'utf-8'))
-				print("Running moveForward")
+				print("Running moveForward()")
 				continue
 			elif "3" in data:
 				connection.sendall(bytes('3\n', 'utf-8'))
-				print("Running moveInReverse")
+				print("Running moveInReverse()")
 				continue
 			elif "4" in data:
-				connection.sendall(bytes('not streaming\n', 'utf-8'))
+				connection.sendall(bytes('Not streaming\n', 'utf-8'))
 				print("currently unable to stream")
 				continue
 			elif "5" in data:
@@ -49,6 +49,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 				print("Not streaming")
 				continue
 			else:
+				connection.sendall(bytes("data\n"), 'utf-8')
 				continue
 
 print("Connection successful from beaglebone")
