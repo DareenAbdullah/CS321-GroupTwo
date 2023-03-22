@@ -104,6 +104,10 @@ public class JavaNetworking {
                     sendMessage.flush();
                     cleanUp(socket);
                     break;
+                default:
+                    sendMessage.flush();
+                    System.out.println("invalid input");
+                    break;
             }
             confirmed = readMessage.readLine();
             
