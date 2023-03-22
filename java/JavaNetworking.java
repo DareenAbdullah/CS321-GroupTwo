@@ -20,7 +20,6 @@ public class JavaNetworking {
      * sends messages to beagleBone
      */
     private PrintWriter sendMessage;
-    
     /** This method listens in a specified port
      * if a connection can be made, it returns the socket through which
      * communication can be made.
@@ -59,6 +58,7 @@ public class JavaNetworking {
             //if a connection cannot be made.
             socket = null;
         }
+
         return socket;
     }
 
@@ -105,12 +105,13 @@ public class JavaNetworking {
                     cleanUp(socket);
                     break;
                 default:
+                    System.out.println(command);
+                    sendMessage.print("invalid");
                     sendMessage.flush();
-                    System.out.println("invalid input");
                     break;
             }
+
             confirmed = readMessage.readLine();
-            
             if (confirmed == null){
                 output = -1;
             }
@@ -200,6 +201,7 @@ public class JavaNetworking {
                 return -1;
             }
         }
+        
         return 0;
     }
     /** Main method for debugging
@@ -208,17 +210,24 @@ public class JavaNetworking {
      */
     public static void main(String[] args){
         JavaNetworking j = new JavaNetworking();
+        int i = 0;
         Socket s = j.createConnection(12345, LOCAL_HOST, "none", "none");
         if (s != null && s.isConnected()){
-            System.out.println("success connecting!");
-            System.out.println(j.move(s, 'l'));               
-            System.out.println(j.move(s, 'r'));
-            System.out.println(j.move(s, 'f'));
-            System.out.println(j.move(s, 'b'));
-            System.out.println(j.startStreaming(s));
-            System.out.println(j.stopStreaming(s));
-            System.out.println(j.move(s, 'q'));
-            System.out.println(s.isClosed());
+            while(i <100){
+
+                System.out.println("success connecting!");
+                System.out.println(j.move(s, 'l'));               
+                System.out.println(j.move(s, 'r'));
+                System.out.println(j.move(s, 'f'));
+                System.out.println(j.move(s, 'b'));
+                System.out.println(j.startStreaming(s));
+                System.out.println(j.stopStreaming(s));
+                System.out.println(j.move(s, 'q'));
+                if (s.isClosed()){
+                    break;
+                }
+                i++;
+            }
         }
         else{
             System.out.println("Unsuccessful, socket is closed");
