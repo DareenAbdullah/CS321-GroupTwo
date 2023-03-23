@@ -26,16 +26,31 @@ public class JavaNetworking {
      * Socket initialize 
      */
     private Socket socket= null;
-    
+
+    /**
+     * Default password to work with current python script
+     * in python folder
+     */
+    private String defaultPassword = "none";
+
+    /**
+     * Default port numbert to work with current python script
+     * in python folder
+     */
+    private int defaultPort = 12345;
+
     /**
      * Nina:
      * Constructor to intialize socket calling the create connection.
-     * //Default to local host
+     * //Default to local host with default password to work with current python script in python folder
      */
     public JavaNetworking(){
-        socket= createConnection(12345, LOCAL_HOST, "none", "none");
+        socket= createConnection(defaultPort, LOCAL_HOST, defaultPassword, defaultPassword);
     }
 
+    /**
+     * create connection with user specified port, host, client password and server password
+     */
     public JavaNetworking(int portNumber, String hostName, String clientPass, String serverPass){
         socket = createConnection(portNumber, hostName, clientPass, serverPass);
     }
@@ -244,8 +259,9 @@ public class JavaNetworking {
         return this.socket == null ? false : this.socket.isConnected();
     }
     /** Main method for debugging
-     *  //TODO: work on the param for startstreaming
-     *  work on the param for stopStreaming
+     *  //TODO: work on the param for start/stop streaming
+     * // TODO DONE! - Romel
+     * 
      * @param args
      */
     public static void main(String[] args){
