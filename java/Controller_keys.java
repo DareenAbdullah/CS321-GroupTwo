@@ -60,22 +60,27 @@ public class Controller_keys {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				int keyCode = e.getKeyCode();
+				JavaNetworking socket= new JavaNetworking();
 				switch (keyCode) {
 				case KeyEvent.VK_UP:
                     Direction.setText("Direction: forward");
                     description = "Direction: forward";
+					socket.move('f'); // -> GUI push forward to socket
 					break;
 				case KeyEvent.VK_DOWN:
                     Direction.setText("Direction: Reverse");
                     description = "Direction: Reverse"; 
+					socket.move('b');
 					break;
 				case KeyEvent.VK_RIGHT:
                     Direction.setText("Direction: Right");
                     description = "Direction: Right"; 
+					socket.move('r');
 					break;
 				case KeyEvent.VK_LEFT:
                     Direction.setText("Direction: Left");
                     description = "Direction: Left"; 
+					socket.move('l');
 					break;
 				}
                 
