@@ -20,6 +20,21 @@ public class JavaNetworking {
      * sends messages to beagleBone
      */
     private PrintWriter sendMessage;
+    
+    /**
+     * Nina:
+     * Socket initialize 
+     */
+    private Socket socket= null;
+    
+    /**
+     * Nina:
+     * Constructor to intialize socket calling the create connection.
+     */
+    JavaNetworking(){
+        socket= createConnection(0, LOCAL_HOST, LOCAL_HOST, LOCAL_HOST);
+    }
+
     /** This method listens in a specified port
      * if a connection can be made, it returns the socket through which
      * communication can be made.
@@ -30,7 +45,10 @@ public class JavaNetworking {
      * @return socket through which communication is possible.
      */
     public Socket createConnection(int portNumber, String hostName, String clientPass, String serverPass){
-        Socket socket = null;
+        /*
+         * Nina: Created the socket on line 28
+         */
+        // Socket socket = null; 
         try{
             socket = new Socket(hostName, portNumber);
             this.readMessage = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -62,14 +80,18 @@ public class JavaNetworking {
         return socket;
     }
 
+    /*
+     * Nina: Removed the socket from param
+     */
+
     /** This method sends commands to the beaglebone
      * 
-     * @param socket
+     * @param socket //Removed from param for easier use in the GUI
      * @param command either 'l', 'r', 'f', 'b', '0' , '1'
      * 
      * @return 0 if success
      */
-    public int move(Socket socket, char command){
+    public int move(char command){
         int output = 0;
         if (socket == null){
             return -1;
@@ -209,22 +231,23 @@ public class JavaNetworking {
         return 0;
     }
     /** Main method for debugging
-     * 
+     *  //TODO: work on the param for startstreaming
+     *  work on the param for stopStreaming
      * @param args
      */
     public static void main(String[] args){
         JavaNetworking j = new JavaNetworking();
         int i = 0;
-        Socket s = j.createConnection(12345, LOCAL_HOST, "none", "none");
+        // Socket s = j.createConnection(12345, LOCAL_HOST, "none", "none");
         if (s != null && s.isConnected()){
             while(i <10000){
 
                 System.out.println("success connecting!");
-                System.out.println(j.move(s, 'l'));               
-                System.out.println(j.move(s, 'r'));
-                System.out.println(j.move(s, 'f'));
-                System.out.println(j.move(s, 'b'));
-                System.out.println(j.startStreaming(s));
+                System.out.println(j.move('l'));               
+                System.out.println(j.move('r'));
+                System.out.println(j.move('f'));
+                System.out.println(j.move('b'));
+                System.out.println(j.startStreaming(j)); 
                 System.out.println(j.stopStreaming(s));
                 System.out.println(j.move(s, 'e'));
                 if (s.isClosed()){
