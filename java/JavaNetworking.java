@@ -30,9 +30,14 @@ public class JavaNetworking {
     /**
      * Nina:
      * Constructor to intialize socket calling the create connection.
+     * //Default to local host
      */
-    JavaNetworking(){
-        socket= createConnection(0, LOCAL_HOST, LOCAL_HOST, LOCAL_HOST);
+    public JavaNetworking(){
+        socket= createConnection(12345, LOCAL_HOST, "none", "none");
+    }
+
+    public JavaNetworking(int portNumber, String hostName, String clientPass, String serverPass){
+        socket = createConnection(portNumber, hostName, clientPass, serverPass);
     }
 
     /** This method listens in a specified port
@@ -123,7 +128,7 @@ public class JavaNetworking {
                 case 'q':
                     System.out.println("Exiting all processes");
                     sendMessage.print("q");
-                    cleanUp(socket);
+                    cleanUp();
                     return 0;
                 default:
                     System.out.println(command);
@@ -154,8 +159,8 @@ public class JavaNetworking {
      * 
      * @return true if stream starts successfully
      */
-    public boolean startStreaming(Socket socket){
-        if (socket == null){
+    public boolean startStreaming(){
+        if (this.socket == null){
             return false;
         }
         try{
@@ -182,10 +187,10 @@ public class JavaNetworking {
      * @param socket
      * @return true if successful
      */
-    public boolean stopStreaming(Socket socket){
+    public boolean stopStreaming(){
         //If it's not streaming, simply return true
         boolean flag = false;
-        if (!startStreaming(socket)){
+        if (!startStreaming()){
             return true;
         }
         else{
@@ -214,13 +219,13 @@ public class JavaNetworking {
      * @param socket
      * @return 0 if success, -1 if any error
      */
-    public int cleanUp(Socket socket){
-        if (socket != null && socket.isConnected()){
+    public int cleanUp(){
+        if (this.socket != null && this.socket.isConnected()){
             try{
-                stopStreaming(socket);
+                stopStreaming();
                 this.sendMessage.close();
                 this.readMessage.close();
-                socket.close();
+                this.socket.close();
             }
             catch(IOException e){
                 e.printStackTrace();
@@ -230,6 +235,14 @@ public class JavaNetworking {
         
         return 0;
     }
+
+    /** This method returns the socket
+     * @return true if socket is open and connected.
+     */
+    public boolean isConnected(){
+        
+        return this.socket == null ? false : this.socket.isConnected();
+    }
     /** Main method for debugging
      *  //TODO: work on the param for startstreaming
      *  work on the param for stopStreaming
@@ -238,19 +251,20 @@ public class JavaNetworking {
     public static void main(String[] args){
         JavaNetworking j = new JavaNetworking();
         int i = 0;
-        // Socket s = j.createConnection(12345, LOCAL_HOST, "none", "none");
-        if (s != null && s.isConnected()){
+        if (j.isConnected()){
             while(i <10000){
-
+                if (i == 9999){
+                    j.move('q');
+                }
                 System.out.println("success connecting!");
                 System.out.println(j.move('l'));               
                 System.out.println(j.move('r'));
                 System.out.println(j.move('f'));
                 System.out.println(j.move('b'));
-                System.out.println(j.startStreaming(j)); 
-                System.out.println(j.stopStreaming(s));
-                System.out.println(j.move(s, 'e'));
-                if (s.isClosed()){
+                System.out.println(j.startStreaming()); 
+                System.out.println(j.stopStreaming());
+                System.out.println(j.move('e'));
+                if (!j.isConnected()){
                     break;
                 }
                 System.out.println(i);
