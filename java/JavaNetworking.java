@@ -1,6 +1,6 @@
 /** This class is responsible for connecting and communicating with
  * the main python class in the beaglebone.
- * @author Romel Munoz Valencia
+ * @author Romel Munoz Valencia, Nina Vu
  */
 import java.net.*;
 import java.io.*;
