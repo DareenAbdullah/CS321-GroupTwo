@@ -58,13 +58,13 @@ class VideoStream:
                 
                 #Sends packet to specified IP address 
                 self.server_socket.sendto(buffered_image.tobytes(), (self.host, self.port))
+            break
             
     #Stops the stream. Currently have it listening for keyboard input
     #However, this will be a passed value from the GUI
-
     def stop_stream(self):
         while True:
-            if input() == 'q':
+            if input("quit? ") == 'q':
                 break
         
         if self.is_streaming():
@@ -84,11 +84,10 @@ to stream while actively listen to stop streaming
 '''
 streamer = VideoStream()
 streamer.setup_stream()
-thread1 = threading.Thread(target=streamer.start_stream, args=("10.0.0.245", 12345))
+thread1 = threading.Thread(target=streamer.start_stream, args=(socket.gethostname(), 12345))
 
 thread1.start()
 streamer.stop_stream()
-
 
 
 
