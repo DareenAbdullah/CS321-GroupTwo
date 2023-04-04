@@ -58,15 +58,11 @@ class VideoStream:
                 
                 #Sends packet to specified IP address 
                 self.server_socket.sendto(buffered_image.tobytes(), (self.host, self.port))
-            
+            break
+
     #Stops the stream. Currently have it listening for keyboard input
     #However, this will be a passed value from the GUI
-
     def stop_stream(self):
-        while True:
-            if input() == 'q':
-                break
-        
         if self.is_streaming():
             self.continue_stream = 'n'
             self.streaming = False
@@ -74,21 +70,26 @@ class VideoStream:
     
     #Returns whether or not the video is being streamed
     def is_streaming(self):
-        return self.is_streaming
+        return self.streaming
+
+    def reset(self):
+        self.server_socket.close()
+        self.frame_capture = None
+        self.setup_stream()
     
 
 '''Testing multithreading component
 This is the part that will be in the PythonNetworking class
 to stream while actively listen to stop streaming
-
-'''
 streamer = VideoStream()
 streamer.setup_stream()
-thread1 = threading.Thread(target=streamer.start_stream, args=("10.0.0.245", 12345))
+thread1 = threading.Thread(target=streamer.start_stream, args=(socket.gethostname(), 12345))
 
 thread1.start()
 streamer.stop_stream()
-
-
-
-
+input()
+streamer.reset()
+thread1 = threading.Thread(target=streamer.start_stream, args=(socket.gethostname(), 12345))
+thread1.start()
+streamer.stop_stream()
+'''

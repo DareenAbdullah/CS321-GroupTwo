@@ -184,12 +184,8 @@ public class JavaNetworking {
 
             String confirmed = null;
             confirmed = this.readMessage.readLine();
-            if (confirmed == null || !confirmed.equals("Streaming")){
-                return false;
-            }
-            else{
-                return true;
-            }
+
+            return confirmed == null ? false : true;
         }
         catch(IOException e){
             e.printStackTrace();
@@ -204,30 +200,19 @@ public class JavaNetworking {
      */
     public boolean stopStreaming(){
         //If it's not streaming, simply return true
-        boolean flag = false;
-        if (!startStreaming()){
-            return true;
+        try{
+            System.out.println("stopping the stream");
+            this.sendMessage.print("5");
+            this.sendMessage.flush();
+            String confirmed = null;
+            confirmed = this.readMessage.readLine();
+            
+            return confirmed == null ? false : true;
         }
-        else{
-            try{
-                this.sendMessage.print("5");
-                this.sendMessage.flush();
-
-                String confirmed = null;
-                confirmed = this.readMessage.readLine();
-                if (confirmed == null || !confirmed.equals("Not streaming")){
-                    flag = false;
-                }
-                else{
-                    flag = true;
-                }
-            }
-            catch(IOException e){
-                e.printStackTrace();
-                flag = false;
-            }
+        catch(IOException e){
+            e.printStackTrace();
         }
-        return flag;
+        return true;    
     }
 
     /** This method closes the open socket and any other resource
@@ -268,9 +253,10 @@ public class JavaNetworking {
         JavaNetworking j = new JavaNetworking();
         int i = 0;
         if (j.isConnected()){
-            while(i <10000){
-                if (i == 9999){
+            while(i <1000){
+                if (i == 999){
                     j.move('q');
+                    break;
                 }
                 System.out.println("success connecting!");
                 System.out.println(j.move('l'));               
@@ -278,7 +264,6 @@ public class JavaNetworking {
                 System.out.println(j.move('f'));
                 System.out.println(j.move('b'));
                 System.out.println(j.startStreaming()); 
-                System.out.println(j.stopStreaming());
                 System.out.println(j.move('e'));
                 if (!j.isConnected()){
                     break;

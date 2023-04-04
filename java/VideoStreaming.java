@@ -14,7 +14,7 @@ public class VideoStreaming{
         JLabel lbl = new JLabel();
         
         int timer = 10000;
-        try(DatagramSocket socket = new DatagramSocket(12345)){
+        try(DatagramSocket socket = new DatagramSocket(12346)){
             System.out.println("Starting");
             //Currently, endless loop
             while(timer != 0){
