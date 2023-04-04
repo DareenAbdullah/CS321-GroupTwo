@@ -1,3 +1,6 @@
+'''
+This is the main class communicating across all other classes in bb, starting threads as needed.
+'''
 #!/usr/bin/env python3
 
 import socket
@@ -9,7 +12,14 @@ HOST = "127.0.0.1"
 PORT = 12345
 num = 0
 streamer = VideoStream.VideoStream()
+#thread1 will handle video streaming
 thread1 = None
+
+#thread2 will handle steering
+thread2 = None
+
+#thread3 will handle acceleration
+thread3 = None
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 	s.bind((HOST, PORT))
 	s.listen()
