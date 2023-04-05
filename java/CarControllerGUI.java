@@ -5,9 +5,11 @@ import javax.swing.*;
 public class CarControllerGUI extends JFrame implements KeyListener {
     private JButton forwardButton, reverseButton, leftButton, rightButton, brakeButton;
 
+
     public CarControllerGUI() {
         // Set up the JFrame
         super("Need For Speed");
+
         setSize(600, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

@@ -7,14 +7,12 @@ import javax.swing.border.Border;
 
 //import apple.laf.JRSUIConstants.Direction;
 
-public class Controller_keys {
+public class Controller_keys implements Runnable {
 	
 	private String description;
     
     public Controller_keys() {
-    	
-    	this.description = ""; 
-		
+    	this.description = "";
 	}
     
     
@@ -60,27 +58,30 @@ public class Controller_keys {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				int keyCode = e.getKeyCode();
-				JavaNetworking socket= new JavaNetworking();
 				switch (keyCode) {
 				case KeyEvent.VK_UP:
                     Direction.setText("Direction: forward");
                     description = "Direction: forward";
-					socket.move('f'); // -> GUI push forward to socket
+					// send message 'f'
+					sharedMessage.setMessage("f");
 					break;
 				case KeyEvent.VK_DOWN:
                     Direction.setText("Direction: Reverse");
-                    description = "Direction: Reverse"; 
-					socket.move('b');
+                    description = "Direction: Reverse";
+					sharedMessage.setMessage("b");
+					// send message 'b'
 					break;
 				case KeyEvent.VK_RIGHT:
                     Direction.setText("Direction: Right");
-                    description = "Direction: Right"; 
-					socket.move('r');
+                    description = "Direction: Right";
+					sharedMessage.setMessage("r");
+					// send message 'r'
 					break;
 				case KeyEvent.VK_LEFT:
                     Direction.setText("Direction: Left");
-                    description = "Direction: Left"; 
-					socket.move('l');
+                    description = "Direction: Left";
+					sharedMessage.setMessage("l");
+					// send message 'l'
 					break;
 				}
                 
@@ -91,9 +92,9 @@ public class Controller_keys {
 				int keyCode = e.getKeyCode();
                 if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_LEFT ){
                     Direction.setText("Direction: Break");
+					sharedMessage.setMessage("e");
+					// send message 'e'
                 }
-				
-
 			}
 
 		});
@@ -106,6 +107,17 @@ public class Controller_keys {
 	public static void main(String[] args) {
 		Controller_keys c = new Controller_keys();
 		c.setFrame();
+	}
+
+	private SharedMessage sharedMessage;
+
+	public Controller_keys(SharedMessage sharedMessage) {
+		this.sharedMessage = sharedMessage;
+	}
+
+	@Override
+	public void run() {
+		setFrame();
 	}
 }
 

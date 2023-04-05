@@ -5,7 +5,7 @@
 import java.net.*;
 import java.io.*;
 
-public class JavaNetworking {
+public class JavaNetworking implements Runnable {
     /**
      * Local host IP address used for testing
      */
@@ -60,7 +60,6 @@ public class JavaNetworking {
      * communication can be made.
      * 
      * @param portNumber user specified port number
-     * @param password message recognized by our beaglebone server program
      * 
      * @return socket through which communication is possible.
      */
@@ -105,8 +104,7 @@ public class JavaNetworking {
      */
 
     /** This method sends commands to the beaglebone
-     * 
-     * @param socket //Removed from param for easier use in the GUI
+     *
      * @param command either 'l', 'r', 'f', 'b', '0' , '1'
      * 
      * @return 0 if success
@@ -114,39 +112,33 @@ public class JavaNetworking {
     public int move(char command){
         int output = 0;
         if (socket == null){
-            return -1;
+            return -100;
         }
         try{
             String confirmed = null;
             
             switch (command) {
                 case 'l':
-                    System.out.println("Moving left");
                     sendMessage.print("0");
                     sendMessage.flush();
                     break;
                 case 'r':
-                    System.out.println("Moving right");
                     sendMessage.print("1");
                     sendMessage.flush();
                     break;
                 case 'f':
-                    System.out.println("Moving forward");
                     sendMessage.print("2");
                     sendMessage.flush();
                     break;
                 case 'b':
-                    System.out.println("Moving in reverse");
                     sendMessage.print("3");
                     sendMessage.flush();
                     break;
                 case 'q':
-                    System.out.println("Exiting all processes");
                     sendMessage.print("q");
                     cleanUp();
                     return 0;
                 default:
-                    System.out.println(command);
                     sendMessage.print("invalid");
                     sendMessage.flush();
                     break;
@@ -169,8 +161,7 @@ public class JavaNetworking {
     }
     
     /** This method sends the command to start video streaming
-     * 
-     * @param socket
+     *
      * 
      * @return true if stream starts successfully
      */
@@ -194,8 +185,7 @@ public class JavaNetworking {
     }
 
     /** Stops video streaming
-     *  
-     * @param socket
+     *
      * @return true if successful
      */
     public boolean stopStreaming(){
@@ -216,7 +206,6 @@ public class JavaNetworking {
     }
 
     /** This method closes the open socket and any other resource
-     * @param socket
      * @return 0 if success, -1 if any error
      */
     public int cleanUp(){
@@ -275,5 +264,43 @@ public class JavaNetworking {
         else{
             System.out.println("Unsuccessful, socket is closed");
         }
+    }
+
+    // Add SharedMessage instance variable
+    private SharedMessage sharedMessage;
+
+    // Add a constructor that accepts a SharedMessage object
+    public JavaNetworking(SharedMessage sharedMessage) {
+        this.sharedMessage = sharedMessage;
+    }
+
+    // Modify the move() method to use the message from the shared object
+    public int move() {
+        // Get the message from the shared object
+        String command = sharedMessage.getMessage();
+        if (command == null || command.length() == 0) {
+            return 0;
+        } else {
+            // Print the message
+            System.out.println("Received command: " + command);
+
+            // Clear the message
+            sharedMessage.setMessage("");
+        }
+
+        // Use the first character of the command as the input
+        return move(command.charAt(0));
+    }
+
+    public void run() {
+        socket = createConnection(defaultPort, LOCAL_HOST, defaultPassword, defaultPassword);
+        while (true) {
+            int result = move();
+
+            if (result == -100) {
+                break;
+            }
+        }
+        cleanUp();
     }
 }
