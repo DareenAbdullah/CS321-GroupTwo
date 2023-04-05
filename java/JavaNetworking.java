@@ -2,6 +2,7 @@
  * the main python class in the beaglebone.
  * @author Romel Munoz Valencia, Nina Vu
  */
+import javax.swing.*;
 import java.net.*;
 import java.io.*;
 
@@ -9,7 +10,7 @@ public class JavaNetworking implements Runnable {
     /**
      * Local host IP address used for testing
      */
-    public static final String LOCAL_HOST = "127.0.0.1";
+    public static final String LOCAL_HOST = "localhost";
     
     /**
      * readsMessages from beagleBone
@@ -63,16 +64,14 @@ public class JavaNetworking implements Runnable {
      * 
      * @return socket through which communication is possible.
      */
-    public Socket createConnection(int portNumber, String hostName, String clientPass, String serverPass){
-        /*
-         * Nina: Created the socket on line 28
-         */
-        // Socket socket = null; 
-        try{
-            socket = new Socket(hostName, portNumber);
+    public Socket createConnection(int portNumber, String hostName, String clientPass, String serverPass) {
+        try {
+            socket = new Socket();
+            socket.connect(new InetSocketAddress(hostName, portNumber), 10000); // 10 seconds timeout
+
             this.readMessage = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.sendMessage = new PrintWriter(socket.getOutputStream(), true);
-            
+
             //Sends string to beaglebone
             sendMessage.print(serverPass);
             sendMessage.flush();
@@ -81,17 +80,15 @@ public class JavaNetworking implements Runnable {
             check = readMessage.readLine();
 
             //Checks if beaglebone sends correct password
-            if (check == null || !check.equals((clientPass))){
+            if (check == null || !check.contains((clientPass))) {
                 sendMessage.close();
                 readMessage.close();
                 socket.close();
                 return null;
-            }
-            else{
+            } else {
                 return socket;
             }
-        }
-        catch(IOException e){
+        } catch (IOException e) {
             //if a connection cannot be made.
             socket = null;
         }
@@ -144,17 +141,18 @@ public class JavaNetworking implements Runnable {
                     break;
             }
             if (socket.isConnected()){
-                confirmed = readMessage.readLine();
+                /*confirmed = readMessage.readLine();
             
                 if (confirmed == null){
                     output = -1;
-                }
+                }*/
+                output = 0;
             }
             else{
                 output = -1;
             }
         }
-        catch(IOException e){
+        catch(Exception e){
             output = -1;
         }
         return output;
@@ -272,6 +270,7 @@ public class JavaNetworking implements Runnable {
     // Add a constructor that accepts a SharedMessage object
     public JavaNetworking(SharedMessage sharedMessage) {
         this.sharedMessage = sharedMessage;
+        socket = createConnection(defaultPort, LOCAL_HOST, defaultPassword, defaultPassword);
     }
 
     // Modify the move() method to use the message from the shared object
@@ -280,25 +279,23 @@ public class JavaNetworking implements Runnable {
         String command = sharedMessage.getMessage();
         if (command == null || command.length() == 0) {
             return 0;
-        } else {
-            // Print the message
-            System.out.println("Received command: " + command);
-
-            // Clear the message
-            sharedMessage.setMessage("");
         }
 
         // Use the first character of the command as the input
         return move(command.charAt(0));
     }
 
+    @Override
     public void run() {
-        socket = createConnection(defaultPort, LOCAL_HOST, defaultPassword, defaultPassword);
         while (true) {
             int result = move();
-
-            if (result == -100) {
+            if (result == -1) {
                 break;
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
         cleanUp();

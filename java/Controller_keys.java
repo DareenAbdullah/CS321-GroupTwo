@@ -117,7 +117,12 @@ public class Controller_keys implements Runnable {
 
 	@Override
 	public void run() {
-		setFrame();
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				setFrame();
+			}
+		});
 	}
 }
 
