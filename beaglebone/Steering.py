@@ -7,12 +7,12 @@ class Steering:
         self.servoPin = 'P9_14'
         self.currentPosition = 5
         PWM.start(self.servoPin, 5, 50)
-    
+    #Moves servo left
     def setCycleLeft(self):
         if self.currentPosition > 5:
             self.currentPosition -= 1
             PWM.set_duty_cycle(self.servoPin, self.currentPosition)
-        
+    #Moves servo right 
     def setCycleRight(self):
         if self.currentPosition < 10:
             self.currentPosition += 1
