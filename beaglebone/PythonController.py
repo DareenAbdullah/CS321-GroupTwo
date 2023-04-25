@@ -1,25 +1,29 @@
-'''
-This is the main class communicating across all other classes in bb, starting threads as needed.
-'''
 #!/usr/bin/env python3
 
 import socket
 import codecs
 import VideoStream
 import threading
+import Steering
+import CarMov
 
 HOST = "127.0.0.1"
 PORT = 12345
 num = 0
+
+#Initialize VideoStream object
 streamer = VideoStream.VideoStream()
 #thread1 will handle video streaming
 thread1 = None
 
+steer = Steering.Steering()
 #thread2 will handle steering
 thread2 = None
 
+car_throttle = CarMov.CarMov()
 #thread3 will handle acceleration
 thread3 = None
+print("Now waiting for socket to connect")
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 	s.bind((HOST, PORT))
 	s.listen()
@@ -39,18 +43,22 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
 			elif "0" in data:
 				connection.sendall(bytes('0\n', 'utf-8'))
+				steer.setCycleLeft()
 				print("Running moveLeft()")
 				
 			elif "1" in data:
 				connection.sendall(bytes('1\n', 'utf-8'))
+				steer.setCycleRight()
 				print("Running moveRight()")
 				
 			elif "2" in data:
 				connection.sendall(bytes('2\n', 'utf-8'))
+				car_throttle.move_forward()
 				print("Running moveForward()")
 				
 			elif "3" in data:
 				connection.sendall(bytes('3\n', 'utf-8'))
+				car_throttle.move_backward()
 				print("Running moveInReverse()")
 				
 			elif "4" in data:
