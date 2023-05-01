@@ -22,6 +22,9 @@ controller.init()
 # Print the controller's name
 print("Connected to controller:", controller.get_name())
 
+# Main game loop
+running = True
+
 # Initialize a socket for TCP communication
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -65,9 +68,6 @@ def start_server():
 # Start the server thread
 server_thread = threading.Thread(target=start_server)
 server_thread.start()
-
-# Main game loop
-running = True
 
 message = ""
 
