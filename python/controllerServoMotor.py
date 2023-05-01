@@ -7,7 +7,7 @@ import time
 pygame.init()
 joystick = pygame.joystick.Joystick(0)
 joystick.init()
-
+ 
 # Check for connected joysticks/gamepads
 joystick_count = pygame.joystick.get_count()
 if joystick_count == 0:
