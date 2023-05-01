@@ -133,7 +133,9 @@ while running:
                 y_axis_right = event.value
                 message = "RY: " + str(y_axis_right)
             send_message(message)
-                
+        if message != "":
+            print(message)
+            message = ""
 # Close the socket
 s.close()
 
