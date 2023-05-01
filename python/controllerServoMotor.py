@@ -33,10 +33,8 @@ PWM.start(servo_pin, 0, 50)
 servo_angle = 90  # initial angle of the servo
 
 # Set up the motor control
-motor_pin_a = "P8_13"  # pin to use for motor control (A)
-motor_pin_b = "P8_19"  # pin to use for motor control (B)
-PWM.start(motor_pin_a, 0, 1000)
-PWM.start(motor_pin_b, 0, 1000)
+motor_pin = "P8_13"  # pin to use for motor control
+PWM.start(motor_pin, 0, 1000)
 
 # Function to change servo angle
 def change_servo_angle(angle):
@@ -44,9 +42,9 @@ def change_servo_angle(angle):
     servo_angle = angle
     PWM.set_duty_cycle(servo_pin, servo_angle)
 
-# Function to send motor speeds and servo angle over the network
-def send_message(speed_a, speed_b, angle):
-    message = f"{speed_a},{speed_b},{angle}"
+# Function to send motor speed and servo angle over the network
+def send_message(speed, angle):
+    message = f"{speed},{angle}"
     sock.sendto(message.encode(), (host, port))
 
 
@@ -81,9 +79,6 @@ while True:
             elif event.axis == 4:
                 # Y-axis motion of the right joystick (motor control)
                 y_axis = event.value
-                ("Right joystick y axis is " + y_axis)
-                speed_a = int((y_axis + 1) * 50)  # Map joystick value (-1 to 1) to motor speed (0 to 100)
-                speed_b = int((y_axis + 1) * 50)  # Map joystick value (-1 to 1) to motor speed (0 to 100)
-                PWM.set_duty_cycle(motor_pin_a, speed_a)
-                PWM.set_duty_cycle(motor_pin_b, speed_b)
-                send_message(speed_a, speed_b, servo_angle)
+                speed = int((y_axis + 1) * 50)  # Map joystick value (-1 to 1) to motor speed (0 to 100)
+                PWM.set_duty_cycle(motor_pin, speed)
+                send_message(speed, servo_angle)
