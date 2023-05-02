@@ -29,13 +29,13 @@ running = True
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Specify the server's address and port
-server_address = ('localhost', 12345)  # Replace with your server's address and port
+server_address = ('192.168.8.243', 12346)  # Replace with your server's address and port
 
 # Bind the socket to the server's address and port
 s.bind(server_address)
 
 # Listen for incoming connections
-s.listen(1)
+s.listen()
 
 # List of connected clients
 clients = []
@@ -71,6 +71,10 @@ server_thread.start()
 
 message = ""
 
+def normalize(value):
+    # Map the range of the joystick values (-1.0 to 1.0) to the range of integers (0 to 255)
+    return value
+
 def send_message(message):
     for client in clients:
         client.send(message.encode())
@@ -82,6 +86,7 @@ while running:
             running = False
 
         # Check for controller input events
+        
         if event.type == pygame.JOYBUTTONDOWN:
             # Handle button press events
             if event.button == 0:
@@ -94,6 +99,7 @@ while running:
             if event.button == 2:  
                 message = "X"
                 running = False
+                s.close()
                 
             # Send the message to all connected clients
             send_message(message)
@@ -114,24 +120,32 @@ while running:
             # Handle joystick motion events
             if event.axis == 0:
                 # X-axis motion of the left joystick
+                message = ""
                 x_axis_left = event.value
                 print("Left Joystick X-axis value:", x_axis_left)
+                angle = int((x_axis_left + 1) * 90) 
+                print("angel Left Joystick X-axis value: ", angle)
                 message = "LX: " + str(x_axis_left)
 
             elif event.axis == 1:
+                message = ""
                 # Y-axis motion of the left joystick
                 y_axis_left = event.value
                 message = "LY: " + str(y_axis_left)
 
             elif event.axis == 3:
+                message = ""
                 # X-axis motion of the right joystick
                 x_axis_right = event.value
                 message = "RX: " + str(x_axis_right)
 
             elif event.axis == 4:
+                message = ""
                 # Y-axis motion of the right joystick
                 y_axis_right = event.value
                 message = "RY: " + str(y_axis_right)
+            else:
+                message = ""
             send_message(message)
         if message != "":
             print(message)
