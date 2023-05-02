@@ -1,7 +1,7 @@
 import pygame
 import socket
 import Adafruit_BBIO.PWM as PWM
-import time
+
 
 # set up the controller
 pygame.init()
@@ -62,10 +62,6 @@ while True:
             if event.button == 2:  
                 print("X button was pressed, exiting program")
                 running = False
-
-        elif event.type == pygame.JOYBUTTONUP:
-            # Handle button release events
-            print("Button released:", event.button)
 
         elif event.type == pygame.JOYAXISMOTION:
             # Handle joystick motion events
