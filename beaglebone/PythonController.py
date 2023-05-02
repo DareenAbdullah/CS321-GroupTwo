@@ -7,7 +7,7 @@ import Steering
 import CarMov
 
 #HOST = "192.168.8.229"
-HOST = "192.168.8.243"
+HOST = "192.168.8.220"
 PORT = 12346
 
 #thread1 will handle video streaming
@@ -31,7 +31,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 			continue
 		data = data.decode('utf-8')
 		data = data.split()
-		print(data)
 		#if A, B, Y , or X were pressed
 		if len(data) < 2:
 			if 'X' in str(data[0]):
@@ -40,8 +39,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 		else:
 			if 'L' in data[0][0] or 'R' in data[0][0]:
 				#Makes the second argumetn (axix value) numeric
-				print(data[1])
-				axis = float(data[1][:3])
+				try:
+					axis = float(data[1][:8])
+				except:
+					axis = float(data[1][:3])
 				if axis == 0:
 					if 'L' in data[0][0]:
 						steer.resetCycle()
@@ -50,20 +51,19 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 						car_throttle.reset_throttle()
 						print(data[0] + str(axis))
 				else:
-					if 'LX:' in data[0]:
+					if 'LX:' in data[0] or 'LY' in data[0]:
 						if axis < 0:
 							steer.setCycleLeft()
-							print(data[0] + str(axis))
 						else:
 							steer.setCycleRight()
-							print(data[0] + str(axis))
-					if 'RY:' in data[0]:
+					else:
 						if axis < 0:
-							car_throttle.move_backward()
+							car_throttle.move_forward()
 							print(data[0] + str(axis))
 						else:
 							car_throttle.move_backward()
 							print(data[0] + str(axis))
 				
 			
+car_throttle.reset_throttle()
 print("Connection successful from beaglebone")
