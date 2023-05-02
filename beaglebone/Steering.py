@@ -10,16 +10,22 @@ class Steering:
     #Initialize pins, start servo, and set cycle limits
     def __init__(self):
         self.currentPosition = DEFAULT_POSITION
-        PWM.start(self.servoPin, DEFAULT_POSITION, 50)
+        PWM.start(SERVO, DEFAULT_POSITION, 50)
     
     def setCycleLeft(self):
         if self.currentPosition > FULL_LEFT_POS:
             self.currentPosition -= 0.5
-            PWM.set_duty_cycle(self.servoPin, self.currentPosition)
+            PWM.set_duty_cycle(SERVO, self.currentPosition)
         
     def setCycleRight(self):
         if self.currentPosition < FULL_RIGHT_POS:
             self.currentPosition += 0.5
-            PWM.set_duty_cycle(self.servoPin, self.currentPosition)
-
-#TODO: find a way to reset position of the wheels when direction keys are released.
+            PWM.set_duty_cycle(SERVO, self.currentPosition)
+    def resetCycle(self):
+        while self.currentPosition < DEFAULT_POSITION:
+            self.currentPosition += 0.5
+            PWM.set_duty_cycle(SERVO, self.currentPosition)
+        
+        while self.currentPosition > DEFAULT_POSITION:
+            self.currentPosition -= 0.5
+            PWM.set_duty_cycle(SERVO, self.currentPosition)
