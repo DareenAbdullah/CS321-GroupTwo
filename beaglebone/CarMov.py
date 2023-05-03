@@ -3,10 +3,10 @@ import Adafruit_BBIO.PWM as PWM
 
 ESC_MOTOR = 'P9_16'
 #100% forward throttle is 5% cycle
-FULL_THROTTLE = 7.2
+FULL_THROTTLE = 6.5
 
 #100% reverse is 10% cycle
-REVERSE_THROTTLE = 7.7
+REVERSE_THROTTLE = 8.5
 
 #Starting position
 RESTING_POSITION = 7.5
