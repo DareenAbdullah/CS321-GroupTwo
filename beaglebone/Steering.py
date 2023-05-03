@@ -29,3 +29,6 @@ class Steering:
         while self.currentPosition > DEFAULT_POSITION:
             self.currentPosition -= 0.5
             PWM.set_duty_cycle(SERVO, self.currentPosition)
+            
+    def setCycle(self, pos):
+        PWM.set_duty_cycle(SERVO, DEFAULT_POSITION + pos)
