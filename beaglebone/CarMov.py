@@ -39,4 +39,4 @@ class CarMov:
             
     def setSpeed(self, speed):
         if speed <= 1 and speed >= -1:
-            PWM.set_duty_cycle(ESC_MOTOR, RESTING_POSITION + (speed * 2.4))
+            PWM.set_duty_cycle(ESC_MOTOR, RESTING_POSITION + (speed * 2))
