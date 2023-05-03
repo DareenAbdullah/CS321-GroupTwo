@@ -52,17 +52,19 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 						print(data[0] + str(axis))
 				else:
 					if 'LX:' in data[0] or 'LY' in data[0]:
-						if axis < 0:
-							steer.setCycleLeft()
-						else:
-							steer.setCycleRight()
+						#if axis < 0:
+						#	steer.setCycleLeft()
+						#else:
+						#	steer.setCycleRight()
+						steer.setCycle(axis)
 					else:
-						if axis < 0:
-							car_throttle.move_forward()
-							print(data[0] + str(axis))
-						else:
-							car_throttle.move_backward()
-							print(data[0] + str(axis))
+						#if axis < 0:
+						#	car_throttle.move_forward()
+						#	print(data[0] + str(axis))
+						#else:
+						#	car_throttle.move_backward()
+						print(data[0] + str(axis))
+						car_throttle.setSpeed(axis)
 				
 			
 car_throttle.reset_throttle()
