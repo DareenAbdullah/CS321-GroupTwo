@@ -3,10 +3,10 @@ import Adafruit_BBIO.PWM as PWM
 
 ESC_MOTOR = 'P9_16'
 #100% forward throttle is 5% cycle
-FULL_THROTTLE = 6.5
+FULL_THROTTLE = 5
 
 #100% reverse is 10% cycle
-REVERSE_THROTTLE = 8.5
+REVERSE_THROTTLE = 10
 
 #Starting position
 RESTING_POSITION = 7.5
@@ -38,5 +38,5 @@ class CarMov:
             PWM.set_duty_cycle(ESC_MOTOR, self.current_throttle)
             
     def setSpeed(self, speed):
-        if speed <=1 and speed >= -1:
-            PWM.set_duty_cycle(ESC_MOTOR, RESTING_POSITION + speed)
+        if speed < 1 and speed > -1:
+            PWM.set_duty_cycle(ESC_MOTOR, RESTING_POSITION + (speed * 2.4))
